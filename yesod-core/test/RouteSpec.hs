@@ -96,7 +96,7 @@ do
             (ConT ''Dispatcher
                 `AppT` ConT ''MyApp
                 `AppT` ConT ''MyApp)
-            [FunD (mkName "dispatcher") [dispatch]]
+            [FunD (mkName "dispatcher") [Clause [] (NormalB dispatch) []]]
         : prinst
         : rainst
         : rrinst

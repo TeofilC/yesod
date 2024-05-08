@@ -41,7 +41,7 @@ data SDC = SDC
 -- view patterns.
 --
 -- Since 1.4.0
-mkDispatchClause :: MkDispatchSettings b site c -> [ResourceTree a] -> Q Clause
+mkDispatchClause :: MkDispatchSettings b site c -> [ResourceTree a] -> Q Exp
 mkDispatchClause MkDispatchSettings {..} resources = do
     suffix <- qRunIO $ randomRIO (1000, 9999 :: Int)
     envName <- newName $ "env" ++ show suffix
@@ -65,10 +65,12 @@ mkDispatchClause MkDispatchSettings {..} resources = do
             }
     clauses <- mapM (go sdc) resources
 
-    return $ Clause
+    return $ LamE
         [VarP envName, VarP reqName]
-        (NormalB $ helperE `AppE` pathInfo)
-        [FunD helperName $ clauses ++ [clause404']]
+        (LetE
+          [FunD helperName $ clauses ++ [clause404']]
+          (helperE `AppE` pathInfo)
+        )
   where
     handlePiece :: Piece a -> Q (Pat, Maybe Exp)
     handlePiece (Static str) = return (LitP $ StringL str, Nothing)

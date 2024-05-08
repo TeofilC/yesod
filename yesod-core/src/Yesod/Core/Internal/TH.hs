@@ -303,7 +303,7 @@ mkDispatchInstance master cxt f res = do
                     }
                 |])
             res
-    let thisDispatch = FunD 'yesodDispatch [clause']
+    let thisDispatch = FunD 'yesodDispatch [Clause [] (NormalB clause') []]
     return [instanceD cxt yDispatch [thisDispatch]]
   where
     yDispatch = ConT ''YesodDispatch `AppT` master
@@ -319,7 +319,7 @@ mkYesodSubDispatch res = do
                 [|subTopDispatch|]) 
         res
     helper <- newName "helper"
-    let fun = FunD helper [clause']
+    let fun = FunD helper [Clause [] (NormalB clause') []]
     return $ LetE [fun] (VarE helper)
 
 
