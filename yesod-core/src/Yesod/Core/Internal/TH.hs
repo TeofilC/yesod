@@ -318,15 +318,8 @@ mkYesodSubDispatch res = do
                 [|subHelper|] 
                 [|subTopDispatch|]) 
         res
-    inner <- newName "inner"
-    let innerFun = FunD inner [clause']
     helper <- newName "helper"
-    let fun = FunD helper
-                [ Clause
-                    []
-                    (NormalB $ VarE inner)
-                    [innerFun]
-                ]
+    let fun = FunD helper [clause']
     return $ LetE [fun] (VarE helper)
 
 
